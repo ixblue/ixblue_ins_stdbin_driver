@@ -42,7 +42,7 @@ You must first install the ixblue_stdbin_decoder library in your system by follo
 If you have not already done so, you can first download the source code into your src directory of your catkin workspace thanks to the command : 
 
 ```sh
-git clone https://laure_le-breton@git.ixblue.com/scm/~laure_le-breton/ixblue_ins_stdbin_driver.git
+git clone git@github.com:ixblue/ixblue_ins_stdbin_driver.git
 ```
 
 Then you can build the code in your catkin workspace : 
