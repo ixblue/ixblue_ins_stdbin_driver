@@ -28,7 +28,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
     }
     else
     {
-        ROS_INFO_STREAM("Received StdBin data");
+        ROS_DEBUG_STREAM("Received StdBin data");
         // No errors, we can parse it :
         std::vector<uint8_t> dataForParser;
         dataForParser.reserve(bytes_transfered);
