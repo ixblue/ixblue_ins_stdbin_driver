@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/system/error_code.hpp>
 #include <inttypes.h>
-#include <iXblue_stdbin_decoder/stdbin_decoder.h>
+#include <ixblue_stdbin_decoder/stdbin_decoder.h>
 #include <string>
 #include <thread>
 
@@ -39,7 +39,7 @@ protected:
     const std::string ip;
     const uint16_t port;
 
-    StdBinDecoder::StdBinDecoder parser;
+    ixblue_stdbin_decoder::StdBinDecoder parser;
 
     boost::array<uint8_t, 8192> datas;
     boost::asio::io_service service;

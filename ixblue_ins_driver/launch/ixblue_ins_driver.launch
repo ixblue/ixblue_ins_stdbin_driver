@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <launch>
-
 	<arg name="frame_id" default="ins"/>
 	<arg name="udp_port" default="8200"/>
 	<arg name="ip" default="0.0.0.0"/>
 	<arg name="time_source" default="ins"/>
 	<arg name="time_origin" default="unix"/>
-	
 
 	<node pkg="ixblue_ins_driver" type="node" name="ixblue_ins_driver" output="screen">
 		<param name="frame_id" value="$(arg frame_id)"/>

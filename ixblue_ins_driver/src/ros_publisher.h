@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ixblue_ins_msgs/ins.h"
-#include <iXblue_stdbin_decoder/data_models/nav_header.h>
-#include <iXblue_stdbin_decoder/data_models/stdbin.h>
+#include <ixblue_stdbin_decoder/data_models/nav_header.h>
+#include <ixblue_stdbin_decoder/data_models/stdbin.h>
 #include <ros/publisher.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -12,22 +12,23 @@ class ROSPublisher
 {
 public:
     ROSPublisher();
-    void onNewStdBinData(const StdBinDecoder::Data::BinaryNav& navData,
-                         const StdBinDecoder::Data::NavHeader& headerData);
+    void onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
+                         const ixblue_stdbin_decoder::Data::NavHeader& headerData);
+
+    // Standard ros msgs
+    static sensor_msgs::ImuPtr toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    static sensor_msgs::NavSatFixPtr
+    toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    static sensor_msgs::TimeReferencePtr
+    toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& headerData);
+
+    // iXblue ros msgs
+    static ixblue_ins_msgs::insPtr toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
 
 protected:
     // Header
-    std_msgs::Header getHeader(const StdBinDecoder::Data::NavHeader& headerData, const StdBinDecoder::Data::BinaryNav& navData);
-
-    // Standard ros msgs
-    sensor_msgs::ImuPtr toImuMsg(const StdBinDecoder::Data::BinaryNav& navData);
-    sensor_msgs::NavSatFixPtr
-    toNavSatFixMsg(const StdBinDecoder::Data::BinaryNav& navData);
-    sensor_msgs::TimeReferencePtr
-    toTimeReference(const StdBinDecoder::Data::NavHeader& headerData);
-
-    // iXblue ros msgs
-    ixblue_ins_msgs::insPtr toiXInsMsg(const StdBinDecoder::Data::BinaryNav& navData);
+    std_msgs::Header getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
+                               const ixblue_stdbin_decoder::Data::BinaryNav& navData);
 
     // Launch parameters
     std::string frame_id;

@@ -49,8 +49,8 @@ ROSPublisher::ROSPublisher()
     stdInsPublisher = nh.advertise<ixblue_ins_msgs::ins>("iX/ins", 1);
 }
 
-void ROSPublisher::onNewStdBinData(const StdBinDecoder::Data::BinaryNav& navData,
-                                   const StdBinDecoder::Data::NavHeader& headerData)
+void ROSPublisher::onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
+                                   const ixblue_stdbin_decoder::Data::NavHeader& headerData)
 {
     auto headerMsg = getHeader(headerData, navData);
 
@@ -86,8 +86,8 @@ void ROSPublisher::onNewStdBinData(const StdBinDecoder::Data::BinaryNav& navData
     }
 }
 
-std_msgs::Header ROSPublisher::getHeader(const StdBinDecoder::Data::NavHeader& headerData,
-                                         const StdBinDecoder::Data::BinaryNav& navData)
+std_msgs::Header ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
+                                         const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
     // --- Initialisation
     std_msgs::Header res;
@@ -135,7 +135,7 @@ std_msgs::Header ROSPublisher::getHeader(const StdBinDecoder::Data::NavHeader& h
     return res;
 }
 
-sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const StdBinDecoder::Data::BinaryNav& navData)
+sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
 
     // --- Check if there are enough data to send the message
@@ -245,7 +245,7 @@ sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const StdBinDecoder::Data::BinaryNav&
 }
 
 sensor_msgs::NavSatFixPtr
-ROSPublisher::toNavSatFixMsg(const StdBinDecoder::Data::BinaryNav& navData)
+ROSPublisher::toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
 
     // --- Check if there are enough data to send the message
@@ -293,7 +293,7 @@ ROSPublisher::toNavSatFixMsg(const StdBinDecoder::Data::BinaryNav& navData)
 }
 
 sensor_msgs::TimeReferencePtr
-ROSPublisher::toTimeReference(const StdBinDecoder::Data::NavHeader& headerData)
+ROSPublisher::toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& headerData)
 {
     // --- Initialisation
     sensor_msgs::TimeReferencePtr res = boost::make_shared<sensor_msgs::TimeReference>();
@@ -312,7 +312,7 @@ ROSPublisher::toTimeReference(const StdBinDecoder::Data::NavHeader& headerData)
 }
 
 ixblue_ins_msgs::insPtr
-ROSPublisher::toiXInsMsg(const StdBinDecoder::Data::BinaryNav& navData)
+ROSPublisher::toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
 
     // --- Check if there are enough data to send the message

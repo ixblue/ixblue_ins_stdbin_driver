@@ -4,37 +4,24 @@
   <version>0.1.0</version>
   <description>The iXblue_ins_driver package</description>
 
-  <!-- One maintainer tag required, multiple allowed, one person per tag -->
-  <!-- Example:  -->
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="laure.le-breton@ixblue.com">Laure LEBROTON</maintainer>
+  <maintainer email="laure.le-breton@ixblue.com">Laure LE BRETON</maintainer>
+  <maintainer email="romain.reignier@ixblue.com">Romain REIGNIER</maintainer>
 
-
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
   <license>MIT</license>
 
- <!-- <url type="website">http://wiki.ros.org/ixblue_ins_driver</url> -->
+  <url type="website">http://wiki.ros.org/ixblue_ins_driver</url>
 
-  <author email="adrien.barral@ixblue.com">Adrien BARRAL</author> 
-  <author email="laure.le-breton@ixblue.com">Laure LEBROTON</author> 
+  <author email="adrien.barral@ixblue.com">Adrien BARRAL</author>
+  <author email="laure.le-breton@ixblue.com">Laure LE BRETON</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>roscpp</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>diagnostic_msgs</depend>
-  <depend>diagnostic_updater</depend>
   <depend>ixblue_ins_msgs</depend>
+  <depend>ixblue_stdbin_decoder</depend>
 
-  <build_depend>libpcap-dev</build_depend>
-  <build_depend>libiXblue_stdbin_decoder</build_depend>
+  <!--build_depend>libpcap-dev</build_depend-->
 
-  <!-- The export tag contains other, unspecified, tags -->
-  <export>
-    <!-- Other tools can request additional information be placed here -->
-
-  </export>
 </package>
