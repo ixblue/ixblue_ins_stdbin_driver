@@ -15,20 +15,20 @@ public:
     void onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
                          const ixblue_stdbin_decoder::Data::NavHeader& headerData);
 
+    // Standard ros msgs
+    static sensor_msgs::ImuPtr toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    static sensor_msgs::NavSatFixPtr
+    toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    static sensor_msgs::TimeReferencePtr
+    toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& headerData);
+
+    // iXblue ros msgs
+    static ixblue_ins_msgs::insPtr toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+
 protected:
     // Header
     std_msgs::Header getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
                                const ixblue_stdbin_decoder::Data::BinaryNav& navData);
-
-    // Standard ros msgs
-    sensor_msgs::ImuPtr toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
-    sensor_msgs::NavSatFixPtr
-    toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
-    sensor_msgs::TimeReferencePtr
-    toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& headerData);
-
-    // iXblue ros msgs
-    ixblue_ins_msgs::insPtr toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
 
     // Launch parameters
     std::string frame_id;
