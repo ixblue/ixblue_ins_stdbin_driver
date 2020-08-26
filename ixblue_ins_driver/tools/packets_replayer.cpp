@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
         ("period", po::value<long>()->default_value(10), "Publication period in ms.")
         ("repeat", "Will repeat the file infinitely")
         ("ip", po::value<std::string>()->default_value(std::string("127.0.0.1")), "Interface on which UDP Frames will be sent")
-        ("port", po::value<uint16_t>()->default_value(8000), "Port on which UDP Frames will be sent")
+        ("port", po::value<uint16_t>()->default_value(8200), "Port on which UDP Frames will be sent")
         ("file", po::value<std::string>(), "File to replay")
     ;
     // clang-format on
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 
     if(vm.count("file") == 0)
     {
-        std::cout << desc << "\nFile parameter is REQUIRED";
+        std::cout << desc << "\nFile parameter is REQUIRED\n";
         return 1;
     }
     pcapFile = vm["file"].as<std::string>();
