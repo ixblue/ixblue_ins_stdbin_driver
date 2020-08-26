@@ -1,20 +1,21 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>ixblue_ins_msgs</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>The ixblue INS defined messages package</description>
 
   <maintainer email="adrien.barral@ixblue.com">Adrien BARRAL</maintainer>
+  <maintainer email="romain.reignier@ixblue.com">Romain REIGNIER</maintainer>
 
   <license>MIT</license>
 
- <!-- <url type="website">http://wiki.ros.org/ixblue_ins_driver</url> -->
+  <url type="website">http://wiki.ros.org/ixblue_ins_msgs</url>
 
-  <author email="adrien.barral@ixblue.com">Adrien BARRAL</author> 
-  <author email="laure.le-breton@ixblue.com">Laure LEBROTON</author> 
-
+  <author email="adrien.barral@ixblue.com">Adrien BARRAL</author>
+  <author email="laure.le-breton@ixblue.com">Laure LE BRETON</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>geometry_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>message_generation</build_depend>
@@ -27,10 +28,4 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
 
-
-  <!-- The export tag contains other, unspecified, tags -->
-  <export>
-    <!-- Other tools can request additional information be placed here -->
-
-  </export>
 </package>

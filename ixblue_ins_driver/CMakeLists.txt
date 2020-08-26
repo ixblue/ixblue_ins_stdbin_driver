@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-set(CATKIN_DEPS roscpp nav_msgs sensor_msgs diagnostic_msgs diagnostic_updater ixblue_ins_msgs)
+set(CATKIN_DEPS roscpp nav_msgs sensor_msgs ixblue_ins_msgs)
 find_package(catkin REQUIRED ${CATKIN_DEPS})
 
 ## Specify libraries to link a library or executable target against
@@ -74,18 +74,19 @@ install(TARGETS ${PROJECT_NAME}_node
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-#   # myfile1
-#   # myfile2
-   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+install(
+  DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 #############
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_ixblue_ins_driver.cpp)
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+if(CATKIN_ENABLE_TESTING)
+   ## Add gtest based cpp test target and link libraries
+   catkin_add_gtest(${PROJECT_NAME}-test test/test_ixblue_ins_driver.cpp)
+   if(TARGET ${PROJECT_NAME}-test)
+   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+   endif()
 endif()
