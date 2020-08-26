@@ -56,11 +56,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(iXblue_stdbin_decoder REQUIRED)
 target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${iXblue_stdbin_decoder_LIBRARIES})
 
-
-find_package(PCAP REQUIRED)
-add_executable(packets_replayer tools/packets_replayer.cpp)
-target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES})
-
+find_package(PCAP)
+if(PCAP_FOUND)
+   add_executable(packets_replayer tools/packets_replayer.cpp)
+   target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES})
+endif()
 
 #############
 ## Install ##
