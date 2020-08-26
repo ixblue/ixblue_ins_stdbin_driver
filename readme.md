@@ -33,7 +33,7 @@ Notice that, because of ROS requirement, the driver can only be used in linux en
 * [Boost](https://www.boost.org/) - Useful C++ library
 * [Libpcap](https://www.tcpdump.org/) - Used to read pcap files for in order to test the code
 * [Gtest](https://github.com/google/googletest) - Used to create the unit tests
-* [iXblue_stdbin_decoder](https://github.com/ixblue/ixblue_stdbin_decoder) - iXblue standard bin protocol parsing library
+* [ixblue_stdbin_decoder](https://github.com/ixblue/ixblue_stdbin_decoder) - iXblue standard bin protocol parsing library
 
 ### Build the code
 
