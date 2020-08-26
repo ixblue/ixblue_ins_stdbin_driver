@@ -30,7 +30,7 @@
   <depend>ixblue_ins_msgs</depend>
 
   <build_depend>libpcap-dev</build_depend>
-  <build_depend>libiXblue_stdbin_decoder</build_depend>
+  <build_depend>ixblue_stdbin_decoder</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

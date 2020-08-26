@@ -10,8 +10,12 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 set(CATKIN_DEPS roscpp nav_msgs sensor_msgs diagnostic_msgs diagnostic_updater ixblue_ins_msgs)
 find_package(catkin REQUIRED ${CATKIN_DEPS})
 
+## Specify libraries to link a library or executable target against
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system program_options)
+find_package(ixblue_stdbin_decoder REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -24,6 +28,7 @@ find_package(Boost REQUIRED COMPONENTS system program_options)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    CATKIN_DEPENDS ${CATKIN_DEPS}
+   DEPENDS Boost ixblue_stdbin_decoder
 )
 
 ###########
@@ -49,12 +54,7 @@ set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX ""
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(${PROJECT_NAME}_node ${catkin_EXPORTED_TARGETS})
-
-## Specify libraries to link a library or executable target against
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
-find_package(iXblue_stdbin_decoder REQUIRED)
-target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${iXblue_stdbin_decoder_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 
 find_package(PCAP)
 if(PCAP_FOUND)
@@ -89,4 +89,3 @@ catkin_add_gtest(${PROJECT_NAME}-test test/test_ixblue_ins_driver.cpp)
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
-
