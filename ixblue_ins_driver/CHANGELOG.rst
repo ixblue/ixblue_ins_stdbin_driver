@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2020-08-27)
+------------------
 * Prepare ROS release
 * Add unit test on ROSPublisher::toNavSatFix()
 * Prepare files catkin for release
