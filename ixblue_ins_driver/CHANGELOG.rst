@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2020-08-28)
+------------------
 * Fix boost dependency for Noetic release
   Only build the packets_replayer if tests are being built
 * Breaking change: Rename ins.msg to Ins.msg and iX/ins topic to ix/ins topic to follow ROS coding style
