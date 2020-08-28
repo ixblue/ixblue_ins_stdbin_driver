@@ -2,6 +2,16 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix boost dependency for Noetic release
+  Only build the packets_replayer if tests are being built
+* Breaking change: Rename ins.msg to Ins.msg and iX/ins topic to ix/ins topic to follow ROS coding style
+  - In ROS, message names are CamelCase
+  - Topics are in lower case
+* Publish ROS time in header of TimeReference message
+* Contributors: BARRAL Adrien, Romain Reignier
+
 0.1.0 (2020-08-27)
 ------------------
 * Prepare ROS release
