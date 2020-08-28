@@ -1,5 +1,9 @@
 # iXblue INS driver - Protocol iXblue stdbin
 
+![Kinetic](https://github.com/ixblue/ixblue_ins_stdbin_driver/workflows/Kinetic/badge.svg)
+![Melodic](https://github.com/ixblue/ixblue_ins_stdbin_driver/workflows/Melodic/badge.svg)
+![Noetic](https://github.com/ixblue/ixblue_ins_stdbin_driver/workflows/Noetic/badge.svg)
+
 iXblue is a global leader in the design and manufacturing of innovative
 solutions devoted to navigation, positioning and underwater imaging,
 shipbuilding, as well as photonics. Using its unique in-house technology,

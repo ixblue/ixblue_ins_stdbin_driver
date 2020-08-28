@@ -1,0 +1,24 @@
+name: Kinetic
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ros-tooling/setup-ros@0.0.25
+        with:
+          required-ros-distributions: kinetic
+      - uses: ros-tooling/action-ros-ci@0.0.19
+        with:
+          package-name: |
+            ixblue_ins_msgs
+            ixblue_ins_driver
+          target-ros1-distro: kinetic
+          vcs-repo-file-url: "https://gist.githubusercontent.com/romainreignier/2a6be935c1d349a9eb2d9725e8247175/raw/f1687c372b7b6a1925a75bb60328edcd3e1096cd/ixblue_stdbin_decoder.repos"
