@@ -46,7 +46,7 @@ ROSPublisher::ROSPublisher()
     stdNavSatFixPublisher = nh.advertise<sensor_msgs::NavSatFix>("standard/navsatfix", 1);
     stdTimeReferencePublisher =
         nh.advertise<sensor_msgs::TimeReference>("standard/timereference", 1);
-    stdInsPublisher = nh.advertise<ixblue_ins_msgs::ins>("iX/ins", 1);
+    stdInsPublisher = nh.advertise<ixblue_ins_msgs::Ins>("ix/ins", 1);
 }
 
 void ROSPublisher::onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
@@ -314,7 +314,7 @@ ROSPublisher::toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& head
     return res;
 }
 
-ixblue_ins_msgs::insPtr
+ixblue_ins_msgs::InsPtr
 ROSPublisher::toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
 
@@ -328,7 +328,7 @@ ROSPublisher::toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
     }
 
     // --- Initialisation
-    ixblue_ins_msgs::insPtr res = boost::make_shared<ixblue_ins_msgs::ins>();
+    ixblue_ins_msgs::InsPtr res = boost::make_shared<ixblue_ins_msgs::Ins>();
 
     // --- Position
     res->latitude = navData.position.get().latitude_deg;
