@@ -16,12 +16,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>libboost-dev</build_depend>
+  <build_export_depend>libboost-dev</build_export_depend>
+
   <depend>roscpp</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>ixblue_ins_msgs</depend>
   <depend>ixblue_stdbin_decoder</depend>
+  <depend>libboost-system-dev</depend>
 
-  <!--build_depend>libpcap-dev</build_depend-->
+  <test_depend>libpcap</test_depend>
+  <test_depend>libboost-program-options-dev</test_depend>
 
 </package>

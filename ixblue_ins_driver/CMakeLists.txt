@@ -14,8 +14,22 @@ find_package(catkin REQUIRED ${CATKIN_DEPS})
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system program_options)
+
+# ixblue_stdbin_decoder must be set before Boost otherwise components are
+# overridden (ixblue_stdbin_decoder only require system while we need
+# program_options to build the packets replayer)
 find_package(ixblue_stdbin_decoder REQUIRED)
+
+# PCAP and Boost program_options are used to build the packets replayer
+# that is only used for development so build and requise it as dependency
+# if tests are built
+if(CATKIN_ENABLE_TESTING)
+   find_package(PCAP REQUIRED)
+   find_package(Boost REQUIRED COMPONENTS system program_options)
+else()
+   find_package(Boost REQUIRED COMPONENTS system)
+endif()
+
 
 ###################################
 ## catkin specific configuration ##
@@ -56,12 +70,6 @@ set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX ""
 add_dependencies(${PROJECT_NAME}_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 
-find_package(PCAP)
-if(PCAP_FOUND)
-   add_executable(packets_replayer tools/packets_replayer.cpp)
-   target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES})
-endif()
-
 #############
 ## Install ##
 #############
@@ -84,6 +92,9 @@ install(
 #############
 
 if(CATKIN_ENABLE_TESTING)
+   add_executable(packets_replayer tools/packets_replayer.cpp)
+   target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES})
+
    ## Add gtest based cpp test target and link libraries
    catkin_add_gtest(${PROJECT_NAME}-test
      test/test_ixblue_ins_driver.cpp
