@@ -124,9 +124,9 @@ The messages are filled into the `ros_publisher.cpp` file.
 
 *iXblue message :*
 
-* **iX/ins** [ixblue_ins_msgs/ins](ixblue_ins_msgs/msg/ins.msg)
+* **iX/ins** [ixblue_ins_msgs/ins](ixblue_ins_msgs/msg/Ins.msg)
 
-[ixblue_ins_msgs/ins](ixblue_ins_msgs/msg/ins.msg) is defined as:
+[ixblue_ins_msgs/ins](ixblue_ins_msgs/msg/Ins.msg) is defined as:
 
 ```
 Header header # Standard ROS message header
@@ -134,7 +134,7 @@ Header header # Standard ROS message header
 int8 ALT_REF_GEOID=0
 int8 ALT_REF_ELLIPSOID=1
 
-# Position 
+# Position
 float64     latitude                             # In degrees, positive north, [-90,90]
 float64     longitude                            # In degrees, increasgin toward east, [0,360]
 int8        altitude_ref                         # 0: Geoid / 1: Ellipsoid, see constant above.
