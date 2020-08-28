@@ -298,7 +298,10 @@ ROSPublisher::toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& head
     // --- Initialisation
     sensor_msgs::TimeReferencePtr res = boost::make_shared<sensor_msgs::TimeReference>();
 
-    // --- Timestamp
+    // --- System time
+    res->header.stamp = ros::Time::now();
+
+    // --- INS Timestamp
     uint32_t sec = (uint32_t)((headerData.navigationDataValidityTime_100us) / 10000);
     uint32_t nsec =
         (uint32_t)(((headerData.navigationDataValidityTime_100us) % 10000) * 100000);
