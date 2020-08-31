@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2020-08-31)
+------------------
 * Fix packets_replayer build by adding CMake package Threads
 * Contributors: Romain Reignier
 
