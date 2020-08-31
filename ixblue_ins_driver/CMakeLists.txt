@@ -20,6 +20,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 # program_options to build the packets replayer)
 find_package(ixblue_stdbin_decoder REQUIRED)
 
+find_package(Threads)
+
 # PCAP and Boost program_options are used to build the packets replayer
 # that is only used for development so build and requise it as dependency
 # if tests are built
@@ -93,7 +95,7 @@ install(
 
 if(CATKIN_ENABLE_TESTING)
    add_executable(packets_replayer tools/packets_replayer.cpp)
-   target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES})
+   target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES} Threads::Threads)
 
    ## Add gtest based cpp test target and link libraries
    catkin_add_gtest(${PROJECT_NAME}-test
