@@ -2,6 +2,11 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add boost thread as test dependency to fix Debian Stretch build
+* Contributors: Romain Reignier
+
 0.1.2 (2020-08-31)
 ------------------
 * Fix packets_replayer build by adding CMake package Threads
