@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2020-09-01)
+------------------
 * Add boost thread as test dependency to fix Debian Stretch build
 * Contributors: Romain Reignier
 
