@@ -28,5 +28,6 @@
 
   <test_depend>libpcap</test_depend>
   <test_depend>libboost-program-options-dev</test_depend>
+  <test_depend>libboost-thread-dev</test_depend>
 
 </package>
