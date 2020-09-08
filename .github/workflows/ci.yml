@@ -1,0 +1,56 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+    name: ROS ${{matrix.ros_distro}} on ${{matrix.distro}}
+    strategy:
+      matrix:
+        distro: [xenial, bionic, focal, stretch, buster]
+        include:
+          - distro: xenial
+            ros_distro: kinetic
+          - distro: bionic
+            ros_distro: melodic
+          - distro: stretch
+            ros_distro: melodic
+          - distro: focal
+            ros_distro: noetic
+          - distro: buster
+            ros_distro: noetic
+
+    runs-on: ubuntu-latest
+    container:
+      image: ros:${{matrix.ros_distro}}-ros-base-${{matrix.distro}}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ws/src/ixblue_ins_stdbin_driver
+
+      - uses: actions/checkout@v2
+        with:
+          repository: ixblue/ixblue_stdbin_decoder
+          path: ws/src/ixblue_stdbin_decoder
+
+      - name: Install dependencies
+        run: |
+          cd ws
+          apt update
+          rosdep update
+          rosdep install --from-paths src --ignore-src -r -y
+      
+      - name: Build WS
+        run: |
+          cd ws
+          . /opt/ros/${{matrix.ros_distro}}/setup.sh
+          catkin_make_isolated --install
+      
+      - name: Test
+        run: |
+          cd ws
+          ls
+          . devel_isolated/setup.sh
+          catkin_make_isolated --pkg ixblue_ins_driver --install --make-args run_tests
