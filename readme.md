@@ -1,5 +1,6 @@
 # iXblue INS driver - Protocol iXblue stdbin
 
+![ROS CI Badge](https://github.com/ixblue/ixblue_ins_stdbin_driver/workflows/ROS%20CI/badge.svg)
 
 iXblue is a global leader in the design and manufacturing of innovative
 solutions devoted to navigation, positioning and underwater imaging,
