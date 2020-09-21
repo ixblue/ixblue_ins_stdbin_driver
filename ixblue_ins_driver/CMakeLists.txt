@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-set(CATKIN_DEPS roscpp nav_msgs sensor_msgs ixblue_ins_msgs)
+set(CATKIN_DEPS roscpp nav_msgs sensor_msgs ixblue_ins_msgs diagnostic_msgs diagnostic_updater)
 find_package(catkin REQUIRED ${CATKIN_DEPS})
 
 ## Specify libraries to link a library or executable target against
