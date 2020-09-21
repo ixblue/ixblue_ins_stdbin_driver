@@ -8,7 +8,7 @@ ROSPublisher::ROSPublisher()
 {
     ros::NodeHandle nh("~");
 
-    nh.param("frame_id", frame_id, std::string("ins"));
+    nh.param("frame_id", frame_id, std::string("imu_link_ned"));
     nh.param("time_source", time_source, std::string("ins"));
     nh.param("time_origin", time_origin, std::string("unix"));
 
@@ -19,8 +19,7 @@ ROSPublisher::ROSPublisher()
     else if(time_source != std::string("ins"))
     {
         ROS_WARN("This timestamp source is not available. You can use ins or ros. By "
-                 "default we "
-                 "replace your value by ins.");
+                 "default we replace your value by ins.");
         time_source = std::string("ins");
     }
 
@@ -31,8 +30,7 @@ ROSPublisher::ROSPublisher()
     else if(time_origin != std::string("unix"))
     {
         ROS_WARN("This timestamp origin is not available. You can use unix or "
-                 "sensor_default. By default we "
-                 "replace your value by unix.");
+                 "sensor_default. By default we replace your value by unix.");
         time_origin = std::string("unix");
     }
 
@@ -150,10 +148,10 @@ sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::Bi
     sensor_msgs::ImuPtr res = boost::make_shared<sensor_msgs::Imu>();
 
     // --- Orientation
-    res->orientation.x = navData.attitudeQuaternion.get().q0;
-    res->orientation.y = navData.attitudeQuaternion.get().q1;
-    res->orientation.z = navData.attitudeQuaternion.get().q2;
-    res->orientation.w = navData.attitudeQuaternion.get().q3;
+    res->orientation.x = navData.attitudeQuaternion.get().q1;
+    res->orientation.y = navData.attitudeQuaternion.get().q2;
+    res->orientation.z = navData.attitudeQuaternion.get().q3;
+    res->orientation.w = navData.attitudeQuaternion.get().q0;
 
     // --- Orientation SD
     if(navData.attitudeQuaternionDeviation.is_initialized() == false)

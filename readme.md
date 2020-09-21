@@ -85,6 +85,7 @@ roslaunch ixblue_ins_driver ixblue_ins_driver.launch
 
 Depending on, your requirements and your configuration, you can also modify some arguments.
 
+* **frame_id** (*string*, default: `imu_link_ned`): frame of the sensor, used in the headers of the messages.
 * **udp_port** (*int*, default: `8200`): your system will receive the data from the INS by this port.
 * **ip** (*string*, default: `0.0.0.0`):  the address of the network interface to listen to
 * **time_source** (*string*, default: `ins`): determine the source of the timestamp data. "ins" for ins timestamp. "ros" for ROS timestamp.
@@ -118,6 +119,10 @@ The iXblue ROS driver is divided into three parts:
 #### Published topics
 
 The messages are filled into the `ros_publisher.cpp` file.
+
+To follow the [REP-145](https://www.ros.org/reps/rep-0145.html), the sensor data are not transformed within the driver, only the units are modified in order to respect [REP-103](https://www.ros.org/reps/rep-0103.html).
+
+To change the orientation of the INS within your system, you can use the [`imu_transformer`](http://wiki.ros.org/imu_transformer) package.
 
 *ROS standard messages:*
 
