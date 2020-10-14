@@ -7,15 +7,11 @@
 #include "ros_publisher.h"
 #include <ros/node_handle.h>
 
-ROSPublisher::ROSPublisher()
+ROSPublisher::ROSPublisher() : nh("~"), diagPub(nh)
 {
-    ros::NodeHandle nh("~");
-
     nh.param("frame_id", frame_id, std::string("imu_link_ned"));
     nh.param("time_source", time_source, std::string("ins"));
     nh.param("time_origin", time_origin, std::string("unix"));
-    nh.param("expected_frequency", expected_frequency, 10.0);
-    nh.param("max_latency", max_latency, 1.0);
 
     if(time_source == std::string("ros"))
     {
@@ -44,8 +40,10 @@ ROSPublisher::ROSPublisher()
     ROS_INFO("Timestamp register in the header will come from : %s", time_source.c_str());
     ROS_INFO("Timestamp register in the header will be in the base time of : %s",
              time_origin.c_str());
-    ROS_INFO("Expected frequency for diagnostics : %.2f Hz", expected_frequency);
-    ROS_INFO("Max latency acceptable for diagnostics : %.3f s", max_latency);
+
+    // Diagnostics
+    const std::string hardwareName = std::string{"iXblue INS "} + frame_id;
+    diagPub.setHardwareID(hardwareName);
 
     // Publishers
     stdImuPublisher = nh.advertise<sensor_msgs::Imu>("standard/imu", 1);
@@ -53,19 +51,6 @@ ROSPublisher::ROSPublisher()
     stdTimeReferencePublisher =
         nh.advertise<sensor_msgs::TimeReference>("standard/timereference", 1);
     stdInsPublisher = nh.advertise<ixblue_ins_msgs::Ins>("ix/ins", 1);
-
-    // Diagnostics
-    const std::string hardwareName = std::string{"iXblue INS "} + frame_id;
-    diagnosticsUpdater.setHardwareID(hardwareName);
-    diagnosticsUpdater.add("status", this, &ROSPublisher::produceStatusDiagnostics);
-    stdImuPublisherDiag.reset(
-        new diagnostic_updater::DiagnosedPublisher<sensor_msgs::Imu>(
-            stdImuPublisher, diagnosticsUpdater,
-            diagnostic_updater::FrequencyStatusParam(
-                &expected_frequency, &expected_frequency, frequency_tolerance, 10),
-            diagnostic_updater::TimeStampStatusParam(-max_latency, max_latency)));
-    diagnosticsTimer =
-        nh.createTimer(ros::Duration(0.1), &ROSPublisher::diagTimerCallback, this);
 }
 
 void ROSPublisher::onNewStdBinData(
@@ -73,15 +58,14 @@ void ROSPublisher::onNewStdBinData(
     const ixblue_stdbin_decoder::Data::NavHeader& headerData)
 {
     // Update status for diagnostics
-    lastAlgorithmStatus = navData.insAlgorithmStatus;
-    lastSystemStatus = navData.insSystemStatus;
+    diagPub.updateStatus(navData.insSystemStatus, navData.insAlgorithmStatus);
 
     auto headerMsg = getHeader(headerData, navData);
 
     // If system is waiting for position, do not publish because data have no meaning
     if(navData.insSystemStatus.is_initialized())
     {
-        const std::bitset<32> systemStatus2{lastSystemStatus->status2};
+        const std::bitset<32> systemStatus2{navData.insSystemStatus->status2};
         if(systemStatus2.test(
                ixblue_stdbin_decoder::Data::INSSystemStatus::Status2::WAIT_FOR_POSITION))
         {
@@ -107,7 +91,8 @@ void ROSPublisher::onNewStdBinData(
     if(imuMsg)
     {
         imuMsg->header = headerMsg;
-        stdImuPublisherDiag->publish(imuMsg);
+        stdImuPublisher.publish(imuMsg);
+        diagPub.stdImuTick(imuMsg->header.stamp);
     }
     if(navsatfixMsg)
     {
@@ -169,81 +154,6 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
     }
 
     return res;
-}
-
-void ROSPublisher::diagTimerCallback(const ros::TimerEvent&)
-{
-    diagnosticsUpdater.update();
-}
-
-void ROSPublisher::produceStatusDiagnostics(
-    diagnostic_updater::DiagnosticStatusWrapper& status)
-{
-    if(!lastAlgorithmStatus.is_initialized() || !lastSystemStatus.is_initialized())
-    {
-        status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "No data received yet");
-    }
-    else
-    {
-        const std::bitset<32> algoStatus1{lastAlgorithmStatus->status1};
-        const std::bitset<32> algoStatus2{lastAlgorithmStatus->status2};
-        const std::bitset<32> algoStatus3{lastAlgorithmStatus->status3};
-        const std::bitset<32> algoStatus4{lastAlgorithmStatus->status4};
-
-        const std::bitset<32> systemStatus1{lastSystemStatus->status1};
-        const std::bitset<32> systemStatus2{lastSystemStatus->status2};
-        const std::bitset<32> systemStatus3{lastSystemStatus->status3};
-
-        status.add("algorithm_status_1", algoStatus1.to_string());
-        status.add("algorithm_status_2", algoStatus2.to_string());
-        status.add("algorithm_status_3", algoStatus3.to_string());
-        status.add("algorithm_status_4", algoStatus4.to_string());
-
-        status.add("system_status_1", systemStatus1.to_string());
-        status.add("system_status_2", systemStatus2.to_string());
-        status.add("system_status_3", systemStatus3.to_string());
-
-        if(systemStatus1.test(
-               ixblue_stdbin_decoder::Data::INSSystemStatus::Status1::SERIAL_IN_R_ERR))
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
-                           "Serial input error");
-        }
-        else if(systemStatus1.test(
-                    ixblue_stdbin_decoder::Data::INSSystemStatus::Status1::INPUT_A_ERR))
-        {
-            // GNNS Input error on Atlans, Input A error on other systems
-            status.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
-                           "GNSS or Input A error");
-        }
-        // TODO other system status checks
-        else if(systemStatus2.test(ixblue_stdbin_decoder::Data::INSSystemStatus::Status2::
-                                       WAIT_FOR_POSITION))
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
-                           "System is waiting for position");
-        }
-        else if(algoStatus1.test(
-                    ixblue_stdbin_decoder::Data::INSAlgorithmStatus::Status1::ALIGNMENT))
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::WARN,
-                           "System in alignment, do not move");
-        }
-        else if(algoStatus1.test(ixblue_stdbin_decoder::Data::INSAlgorithmStatus::
-                                     Status1::FINE_ALIGNMENT))
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::OK, "Fine alignment");
-        }
-        else if(algoStatus1.test(
-                    ixblue_stdbin_decoder::Data::INSAlgorithmStatus::Status1::NAVIGATION))
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::OK, "System in navigation");
-        }
-        else
-        {
-            status.summary(diagnostic_msgs::DiagnosticStatus::OK, "");
-        }
-    }
 }
 
 sensor_msgs::ImuPtr
