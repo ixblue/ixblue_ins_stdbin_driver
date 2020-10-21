@@ -30,22 +30,17 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
     {
         ROS_DEBUG_STREAM("Received StdBin data");
         // No errors, we can parse it :
-        std::vector<uint8_t> dataForParser;
-        dataForParser.reserve(bytes_transfered);
-        std::copy(std::begin(datas), std::begin(datas) + bytes_transfered,
-                  std::back_inserter(dataForParser));
-        // TODO : Change parser parameter to accept a buffer, that will allow to remove
-        // this useless copy.
         try
         {
-            if(parser.parse(dataForParser))
+            parser.addNewData(datas.data(), bytes_transfered);
+            while(parser.parseNextFrame())
             {
                 auto navData = parser.getLastNavData();
                 auto headerData = parser.getLastHeaderData();
                 rosPublisher.onNewStdBinData(navData, headerData);
             }
         }
-        catch(std::runtime_error& e)
+        catch(const std::runtime_error& e)
         {
             ROS_WARN_STREAM("Parse error : " << e.what());
             // TODO : Publish a diagnostic
