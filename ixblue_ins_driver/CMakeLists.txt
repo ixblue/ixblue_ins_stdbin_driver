@@ -101,6 +101,7 @@ if(CATKIN_ENABLE_TESTING)
    catkin_add_gtest(${PROJECT_NAME}-test
      test/test_ixblue_ins_driver.cpp
      src/ros_publisher.cpp
+     src/diagnostics_publisher.cpp
    )
    if(TARGET ${PROJECT_NAME}-test)
     target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
