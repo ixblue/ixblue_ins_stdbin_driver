@@ -93,6 +93,7 @@ Depending on, your requirements and your configuration, you can also modify some
 * **expected_frequency** (*double*, default: `10.0`): expected INS output frequency in Hz, used for diagnostics. Must match the setting on the INS configuration webpage.
 * **max_latency** (*double*, default: `1.0`): maximum acceptable timestamp delay in seconds.
 * **connection_lost_timeout** (*double*, default: `10.0`): time without receiving data before switching to error diagnostic.
+* **use_compensated_acceleration** (*bool*, default: `false`): use acceleration compensated from gravity and Coriolis.
 
 **[Back to top](#table-of-contents)**
 

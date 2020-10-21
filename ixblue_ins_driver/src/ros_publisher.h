@@ -21,7 +21,8 @@ public:
 
     // Standard ros msgs
     static sensor_msgs::ImuPtr
-    toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
+             bool use_compensated_acceleration);
     static sensor_msgs::NavSatFixPtr
     toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
     static sensor_msgs::TimeReferencePtr
@@ -40,6 +41,7 @@ protected:
     std::string frame_id;
     std::string time_source;
     std::string time_origin;
+    bool use_compensated_acceleration;
 
     ros::NodeHandle nh;
 
