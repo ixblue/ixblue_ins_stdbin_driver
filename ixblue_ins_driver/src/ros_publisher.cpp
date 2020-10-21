@@ -1,13 +1,14 @@
-#include "ros_publisher.h"
+#include <bitset>
+#include <cmath>
+
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <cmath>
+
+#include "ros_publisher.h"
 #include <ros/node_handle.h>
 
-ROSPublisher::ROSPublisher()
+ROSPublisher::ROSPublisher() : nh("~"), diagPub(nh)
 {
-    ros::NodeHandle nh("~");
-
     nh.param("frame_id", frame_id, std::string("imu_link_ned"));
     nh.param("time_source", time_source, std::string("ins"));
     nh.param("time_origin", time_origin, std::string("unix"));
@@ -40,6 +41,11 @@ ROSPublisher::ROSPublisher()
     ROS_INFO("Timestamp register in the header will be in the base time of : %s",
              time_origin.c_str());
 
+    // Diagnostics
+    const std::string hardwareName = std::string{"iXblue INS "} + frame_id;
+    diagPub.setHardwareID(hardwareName);
+
+    // Publishers
     stdImuPublisher = nh.advertise<sensor_msgs::Imu>("standard/imu", 1);
     stdNavSatFixPublisher = nh.advertise<sensor_msgs::NavSatFix>("standard/navsatfix", 1);
     stdTimeReferencePublisher =
@@ -47,10 +53,25 @@ ROSPublisher::ROSPublisher()
     stdInsPublisher = nh.advertise<ixblue_ins_msgs::Ins>("ix/ins", 1);
 }
 
-void ROSPublisher::onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
-                                   const ixblue_stdbin_decoder::Data::NavHeader& headerData)
+void ROSPublisher::onNewStdBinData(
+    const ixblue_stdbin_decoder::Data::BinaryNav& navData,
+    const ixblue_stdbin_decoder::Data::NavHeader& headerData)
 {
+    // Update status for diagnostics
+    diagPub.updateStatus(navData.insSystemStatus, navData.insAlgorithmStatus);
+
     auto headerMsg = getHeader(headerData, navData);
+
+    // If system is waiting for position, do not publish because data have no meaning
+    if(navData.insSystemStatus.is_initialized())
+    {
+        const std::bitset<32> systemStatus2{navData.insSystemStatus->status2};
+        if(systemStatus2.test(
+               ixblue_stdbin_decoder::Data::INSSystemStatus::Status2::WAIT_FOR_POSITION))
+        {
+            return;
+        }
+    }
 
     auto imuMsg = toImuMsg(navData);
     auto navsatfixMsg = toNavSatFixMsg(navData);
@@ -71,6 +92,7 @@ void ROSPublisher::onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav&
     {
         imuMsg->header = headerMsg;
         stdImuPublisher.publish(imuMsg);
+        diagPub.stdImuTick(imuMsg->header.stamp);
     }
     if(navsatfixMsg)
     {
@@ -84,8 +106,9 @@ void ROSPublisher::onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav&
     }
 }
 
-std_msgs::Header ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
-                                         const ixblue_stdbin_decoder::Data::BinaryNav& navData)
+std_msgs::Header
+ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
+                        const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
     // --- Initialisation
     std_msgs::Header res;
@@ -133,7 +156,8 @@ std_msgs::Header ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavH
     return res;
 }
 
-sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
+sensor_msgs::ImuPtr
+ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
 
     // --- Check if there are enough data to send the message

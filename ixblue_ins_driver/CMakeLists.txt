@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-set(CATKIN_DEPS roscpp nav_msgs sensor_msgs ixblue_ins_msgs)
+set(CATKIN_DEPS roscpp nav_msgs sensor_msgs ixblue_ins_msgs diagnostic_msgs diagnostic_updater)
 find_package(catkin REQUIRED ${CATKIN_DEPS})
 
 ## Specify libraries to link a library or executable target against
@@ -101,6 +101,7 @@ if(CATKIN_ENABLE_TESTING)
    catkin_add_gtest(${PROJECT_NAME}-test
      test/test_ixblue_ins_driver.cpp
      src/ros_publisher.cpp
+     src/diagnostics_publisher.cpp
    )
    if(TARGET ${PROJECT_NAME}-test)
     target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)

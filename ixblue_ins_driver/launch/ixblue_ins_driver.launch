@@ -6,6 +6,9 @@
 	<arg name="ip" default="0.0.0.0"/>
 	<arg name="time_source" default="ins"/>
 	<arg name="time_origin" default="unix"/>
+	<arg name="expected_frequency" default="10.0"/>
+	<arg name="max_latency" default="1.0"/>
+	<arg name="connection_lost_timeout" default="10.0"/>
 
 	<node pkg="ixblue_ins_driver" type="node" name="ixblue_ins_driver" output="screen">
 		<param name="frame_id" value="$(arg frame_id)"/>
@@ -13,5 +16,8 @@
 		<param name="ip" value="$(arg ip)"/>
 		<param name="time_source" value="$(arg time_source)"/>
 		<param name="time_origin" value="$(arg time_origin)"/>
+		<param name="expected_frequency" value="$(arg expected_frequency)"/>
+		<param name="max_latency" value="$(arg max_latency)"/>
+		<param name="connection_lost_timeout" value="$(arg connection_lost_timeout)"/>
 	</node>
 </launch>
