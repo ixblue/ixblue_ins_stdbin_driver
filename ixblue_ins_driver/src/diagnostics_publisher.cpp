@@ -4,9 +4,11 @@ DiagnosticsPublisher::DiagnosticsPublisher(ros::NodeHandle& nh)
 {
     nh.param("expected_frequency", expected_frequency, 10.0);
     nh.param("max_latency", max_latency, 1.0);
+    nh.param("connection_lost_timeout", connection_lost_timeout, 10.0);
 
     ROS_INFO("Expected frequency for diagnostics : %.2f Hz", expected_frequency);
     ROS_INFO("Max latency acceptable for diagnostics : %.3f s", max_latency);
+    ROS_INFO("Connection lost timeout : %.3f s", connection_lost_timeout);
 
     diagnosticsUpdater.add("status", this,
                            &DiagnosticsPublisher::produceStatusDiagnostics);
@@ -34,6 +36,7 @@ void DiagnosticsPublisher::updateStatus(
     const boost::optional<ixblue_stdbin_decoder::Data::INSAlgorithmStatus>&
         algorithmStatus)
 {
+    lastMessageReceivedStamp = ros::SteadyTime::now();
     lastSystemStatus = systemStatus;
     lastAlgorithmStatus = algorithmStatus;
 }
@@ -49,6 +52,13 @@ void DiagnosticsPublisher::produceStatusDiagnostics(
     if(!lastAlgorithmStatus.is_initialized() || !lastSystemStatus.is_initialized())
     {
         status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "No data received yet");
+    }
+    else if((ros::SteadyTime::now() - lastMessageReceivedStamp).toSec() >
+            connection_lost_timeout)
+    {
+        std::stringstream ss;
+        ss << "No more data for more than " << connection_lost_timeout << " s";
+        status.summary(diagnostic_msgs::DiagnosticStatus::ERROR, ss.str());
     }
     else
     {

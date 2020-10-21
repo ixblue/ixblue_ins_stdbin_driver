@@ -31,10 +31,12 @@ private:
     double expected_frequency;
     const double frequency_tolerance = 0.1;
     double max_latency;
+    double connection_lost_timeout;
 
     ros::Timer diagnosticsTimer;
     diagnostic_updater::Updater diagnosticsUpdater;
     std::unique_ptr<diagnostic_updater::TopicDiagnostic> stdImuTopicDiagnostic;
+    ros::SteadyTime lastMessageReceivedStamp;
     boost::optional<ixblue_stdbin_decoder::Data::INSSystemStatus> lastSystemStatus;
     boost::optional<ixblue_stdbin_decoder::Data::INSAlgorithmStatus> lastAlgorithmStatus;
 };

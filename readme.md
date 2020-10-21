@@ -92,6 +92,7 @@ Depending on, your requirements and your configuration, you can also modify some
 * **time_origin** (*string*, default: `unix`): determine the time origin of the timestamp. "sensor_default" for ins base time. "unix" for UNIX base time (since 1st of january 1970).
 * **expected_frequency** (*double*, default: `10.0`): expected INS output frequency in Hz, used for diagnostics. Must match the setting on the INS configuration webpage.
 * **max_latency** (*double*, default: `1.0`): maximum acceptable timestamp delay in seconds.
+* **connection_lost_timeout** (*double*, default: `10.0`): time without receiving data before switching to error diagnostic.
 
 **[Back to top](#table-of-contents)**
 
