@@ -151,7 +151,8 @@ sensor_msgs::ImuPtr ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::Bi
     res->orientation.x = navData.attitudeQuaternion.get().q1;
     res->orientation.y = navData.attitudeQuaternion.get().q2;
     res->orientation.z = navData.attitudeQuaternion.get().q3;
-    res->orientation.w = navData.attitudeQuaternion.get().q0;
+    // Must negate w to get a correct quaternion and match attitudeHeading output
+    res->orientation.w = -navData.attitudeQuaternion.get().q0;
 
     // --- Orientation SD
     if(navData.attitudeQuaternionDeviation.is_initialized() == false)
