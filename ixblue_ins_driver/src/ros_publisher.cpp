@@ -12,6 +12,7 @@ ROSPublisher::ROSPublisher() : nh("~"), diagPub(nh)
     nh.param("frame_id", frame_id, std::string("imu_link_ned"));
     nh.param("time_source", time_source, std::string("ins"));
     nh.param("time_origin", time_origin, std::string("unix"));
+    nh.param("use_compensated_acceleration", use_compensated_acceleration, false);
 
     if(time_source == std::string("ros"))
     {
@@ -40,6 +41,8 @@ ROSPublisher::ROSPublisher() : nh("~"), diagPub(nh)
     ROS_INFO("Timestamp register in the header will come from : %s", time_source.c_str());
     ROS_INFO("Timestamp register in the header will be in the base time of : %s",
              time_origin.c_str());
+    ROS_INFO("Use compensated acceleration : %s",
+             use_compensated_acceleration ? "true" : "false");
 
     // Diagnostics
     const std::string hardwareName = std::string{"iXblue INS "} + frame_id;
@@ -73,7 +76,7 @@ void ROSPublisher::onNewStdBinData(
         }
     }
 
-    auto imuMsg = toImuMsg(navData);
+    auto imuMsg = toImuMsg(navData, use_compensated_acceleration);
     auto navsatfixMsg = toNavSatFixMsg(navData);
     auto iXinsMsg = toiXInsMsg(navData);
 
@@ -157,13 +160,17 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
 }
 
 sensor_msgs::ImuPtr
-ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
+ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
+                       bool use_compensated_acceleration)
 {
 
     // --- Check if there are enough data to send the message
-    if(navData.rotationRateVesselFrame.is_initialized() == false ||
-       navData.attitudeQuaternion.is_initialized() == false ||
-       navData.accelerationVesselFrame.is_initialized() == false)
+    if(!navData.rotationRateVesselFrame.is_initialized() ||
+       !navData.attitudeQuaternion.is_initialized() ||
+       (use_compensated_acceleration &&
+        !navData.accelerationVesselFrame.is_initialized()) ||
+       (!use_compensated_acceleration &&
+        !navData.rawAccelerationVesselFrame.is_initialized()))
     {
         return nullptr;
     }
@@ -238,9 +245,18 @@ ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
     }
 
     // --- Linear Acceleration
-    res->linear_acceleration.x = navData.accelerationVesselFrame.get().xv1_msec2;
-    res->linear_acceleration.y = navData.accelerationVesselFrame.get().xv2_msec2;
-    res->linear_acceleration.z = navData.accelerationVesselFrame.get().xv3_msec2;
+    if(use_compensated_acceleration)
+    {
+        res->linear_acceleration.x = navData.accelerationVesselFrame.get().xv1_msec2;
+        res->linear_acceleration.y = navData.accelerationVesselFrame.get().xv2_msec2;
+        res->linear_acceleration.z = navData.accelerationVesselFrame.get().xv3_msec2;
+    }
+    else
+    {
+        res->linear_acceleration.x = navData.rawAccelerationVesselFrame.get().xv1_msec2;
+        res->linear_acceleration.y = navData.rawAccelerationVesselFrame.get().xv2_msec2;
+        res->linear_acceleration.z = navData.rawAccelerationVesselFrame.get().xv3_msec2;
+    }
 
     // --- Linear Acceleration SD
     if(navData.accelerationVesselFrameDeviation.is_initialized() == false)
