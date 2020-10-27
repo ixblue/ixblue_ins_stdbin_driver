@@ -2,6 +2,15 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add a param to use compensated acceleration (changes previous behavior)
+* Add diagnostics publication
+* Change default frame_id in launch to match node default
+* Fix orientation quaternion content and make NED convention explicit.
+* Bump minimum CMake version to avoid CMP0048 on Noetic buildfarm
+* Contributors: BARRAL Adrien, Romain Reignier
+
 0.1.3 (2020-09-01)
 ------------------
 * Add boost thread as test dependency to fix Debian Stretch build
