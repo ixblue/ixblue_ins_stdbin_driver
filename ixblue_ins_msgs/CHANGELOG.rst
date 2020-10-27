@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2020-10-27)
+------------------
 * Bump minimum CMake version to avoid CMP0048 on Noetic buildfarm
 * Contributors: Romain Reignier
 

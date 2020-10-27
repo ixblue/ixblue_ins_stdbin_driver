@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2020-10-27)
+------------------
 * Add a param to use compensated acceleration (changes previous behavior)
 * Add diagnostics publication
 * Change default frame_id in launch to match node default
