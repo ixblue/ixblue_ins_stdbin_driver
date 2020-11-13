@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>ixblue_ins_driver</name>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
   <description>The iXblue_ins_driver package</description>
 
   <maintainer email="laure.le-breton@ixblue.com">Laure LE BRETON</maintainer>

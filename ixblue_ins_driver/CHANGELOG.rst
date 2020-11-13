@@ -2,8 +2,8 @@
 Changelog for package ixblue_ins_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2020-11-13)
+------------------
 * Use new std_bin_decoder API to reconstruct incomplete frames
   Avoid the copy of the frame in this driver
 * Contributors: Romain Reignier
