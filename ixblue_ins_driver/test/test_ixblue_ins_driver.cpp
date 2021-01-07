@@ -55,6 +55,25 @@ TEST(ROSPublisherTester, CanFillANavSatFixMsgButNoCovarianceIfNoPositionDeviatio
     EXPECT_EQ(msg->position_covariance_type, sensor_msgs::NavSatFix::COVARIANCE_TYPE_UNKNOWN);
 }
 
+TEST(ROSPublisherTester, CanFillANavSatFixMsgWithWestLong)
+{
+    ixblue_stdbin_decoder::Data::Position pos;
+    pos.latitude_deg = -23.454; // stdbin output [-90°,+90°]
+    pos.longitude_deg = 270.34; // stdbin output [0°,360°[
+    pos.altitude_m = 123.456;
+
+    ixblue_stdbin_decoder::Data::BinaryNav nav;
+    nav.position = pos;
+
+    const sensor_msgs::NavSatFixPtr msg = ROSPublisher::toNavSatFixMsg(nav);
+    ASSERT_NE(msg, nullptr);
+    EXPECT_EQ(msg->latitude, -23.454);
+    EXPECT_DOUBLE_EQ(msg->longitude, -89.66);
+    EXPECT_EQ(msg->altitude, pos.altitude_m);
+    EXPECT_EQ(msg->position_covariance_type,
+              sensor_msgs::NavSatFix::COVARIANCE_TYPE_UNKNOWN);
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

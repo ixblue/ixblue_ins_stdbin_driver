@@ -299,6 +299,11 @@ ROSPublisher::toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navDa
     // --- Position
     res->latitude = navData.position.get().latitude_deg;
     res->longitude = navData.position.get().longitude_deg;
+    // stdbin output in [0; 360[ but NavSatFix must be in [-180; +180]
+    if(res->longitude > 180.0)
+    {
+        res->longitude -= 360.0;
+    }
     res->altitude = navData.position.get().altitude_m;
 
     // --- Position SD
