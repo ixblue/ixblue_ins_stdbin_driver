@@ -45,6 +45,7 @@ jobs:
         run: |
           cd ws
           apt update
+          rosdep update
           rosdep install --from-paths src --ignore-src -r -y
 
       - name: Build WS
