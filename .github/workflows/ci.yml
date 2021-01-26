@@ -14,13 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro: [xenial, bionic, focal, stretch, buster]
+        distro: [xenial, bionic, focal, buster]
         include:
           - distro: xenial
             ros_distro: kinetic
           - distro: bionic
-            ros_distro: melodic
-          - distro: stretch
             ros_distro: melodic
           - distro: focal
             ros_distro: noetic
