@@ -7,7 +7,10 @@ int main(int argc, char* argv[])
     //ros::init(argc, argv, "ixblue_ins_driver");
     //ros::NodeHandle nh("~");
 
-    auto node =  std::make_shared<ROSPublisher>();
+  //rclcpp::Node dummy();
+    rclcpp::init(argc, argv);
+
+    auto node = std::make_shared<ROSPublisher>();
 
     std::string ip;
     int udp_port;
@@ -30,6 +33,8 @@ int main(int argc, char* argv[])
     }
 
     UDPListener udpListener(ip, static_cast<uint16_t>(udp_port));
+
+    udpListener.setPublisher(node);
 
     rclcpp::spin(node);
     rclcpp::shutdown();

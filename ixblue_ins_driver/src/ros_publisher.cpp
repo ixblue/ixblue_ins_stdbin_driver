@@ -7,7 +7,8 @@
 #include "ros_publisher.h"
 #include <rclcpp/rclcpp.hpp>
 
-ROSPublisher::ROSPublisher() : Node("ros_publisher")//, diagPub(nh)
+ROSPublisher::ROSPublisher() :
+  Node("ixblue_ins")
 {
     this->declare_parameter("frame_id", "imu_link_ned");
     this->get_parameter("frame_id", frame_id);
