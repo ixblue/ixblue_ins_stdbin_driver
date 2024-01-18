@@ -1,6 +1,6 @@
 #include "udp_listener.h"
 #include <boost/bind.hpp>
-#include <ros/console.h>
+#include <rclcpp/rclcpp.hpp>
 
 using namespace boost::asio;
 
@@ -9,7 +9,7 @@ UDPListener::UDPListener(const std::string& ip, uint16_t port)
       socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
 {
     listenNextData();
-    ROS_DEBUG_STREAM("Starting asio thread");
+    //RCLCPP_DEBUG(rclcpp::get_logger("UDPListener"), "Starting asio thread");
     asioThread = std::thread([&]() { service.run(); });
 }
 
