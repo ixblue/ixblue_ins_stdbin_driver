@@ -7,20 +7,21 @@
 #include "ros_publisher.h"
 #include <rclcpp/rclcpp.hpp>
 
-ROSPublisher::ROSPublisher() :
-  Node("ixblue_ins")
+ROSPublisher::ROSPublisher(std::shared_ptr<rclcpp::Node> node):
+  diagPub(node)
 {
-    this->declare_parameter("frame_id", "imu_link_ned");
-    this->get_parameter("frame_id", frame_id);
+    nh = node;
+    nh->declare_parameter("frame_id", "imu_link_ned");
+    nh->get_parameter("frame_id", frame_id);
 
-    this->declare_parameter("time_source", "ins");
-    this->get_parameter("time_source", time_source);
+    nh->declare_parameter("time_source", "ins");
+    nh->get_parameter("time_source", time_source);
 
-    this->declare_parameter("time_origin", "unix");
-    this->get_parameter("time_origin", time_origin);
+    nh->declare_parameter("time_origin", "unix");
+    nh->get_parameter("time_origin", time_origin);
 
-    this->declare_parameter("use_compensated_acceleration", false);
-    this->get_parameter("use_compensated_acceleration", use_compensated_acceleration);
+    nh->declare_parameter("use_compensated_acceleration", false);
+    nh->get_parameter("use_compensated_acceleration", use_compensated_acceleration);
 
     if(time_source == std::string("ros"))
     {
@@ -28,7 +29,7 @@ ROSPublisher::ROSPublisher() :
     }
     else if(time_source != std::string("ins"))
     {
-        RCLCPP_WARN(this->get_logger(),"This timestamp source is not available. You can use ins or ros. By "
+        RCLCPP_WARN(nh->get_logger(),"This timestamp source is not available. You can use ins or ros. By "
                                             "default we replace your value by ins.");
         time_source = std::string("ins");
     }
@@ -39,29 +40,29 @@ ROSPublisher::ROSPublisher() :
     }
     else if(time_origin != std::string("unix"))
     {
-        RCLCPP_WARN(this->get_logger(),"This timestamp origin is not available. You can use unix or "
+        RCLCPP_WARN(nh->get_logger(),"This timestamp origin is not available. You can use unix or "
                  "sensor_default. By default we replace your value by unix.");
         time_origin = std::string("unix");
     }
 
     // Check parameters' value
-    RCLCPP_INFO(this->get_logger(),"Frame ID : %s", frame_id.c_str());
-    RCLCPP_INFO(this->get_logger(),"Timestamp register in the header will come from : %s", time_source.c_str());
-    RCLCPP_INFO(this->get_logger(),"Timestamp register in the header will be in the base time of : %s",
+    RCLCPP_INFO(nh->get_logger(),"Frame ID : %s", frame_id.c_str());
+    RCLCPP_INFO(nh->get_logger(),"Timestamp register in the header will come from : %s", time_source.c_str());
+    RCLCPP_INFO(nh->get_logger(),"Timestamp register in the header will be in the base time of : %s",
              time_origin.c_str());
-    RCLCPP_INFO(this->get_logger(),"Use compensated acceleration : %s",
+    RCLCPP_INFO(nh->get_logger(),"Use compensated acceleration : %s",
              use_compensated_acceleration ? "true" : "false");
 
     // Diagnostics
     const std::string hardwareName = std::string{"iXblue INS "} + frame_id;
-    //diagPub.setHardwareID(hardwareName);
+    diagPub.setHardwareID(hardwareName);
 
     // Publishers
-    stdImuPublisher = this->create_publisher<sensor_msgs::msg::Imu>("standard/imu", 10);
-    stdNavSatFixPublisher = this->create_publisher<sensor_msgs::msg::NavSatFix>("standard/navsatfix", 1);
+    stdImuPublisher = nh->create_publisher<sensor_msgs::msg::Imu>("standard/imu", 10);
+    stdNavSatFixPublisher = nh->create_publisher<sensor_msgs::msg::NavSatFix>("standard/navsatfix", 1);
     stdTimeReferencePublisher =
-        this->create_publisher<sensor_msgs::msg::TimeReference>("standard/timereference", 1);
-    stdInsPublisher = this->create_publisher<ixblue_ins_msgs::msg::Ins>("ix/ins", 1);
+        nh->create_publisher<sensor_msgs::msg::TimeReference>("standard/timereference", 1);
+    stdInsPublisher = nh->create_publisher<ixblue_ins_msgs::msg::Ins>("ix/ins", 1);
 }
 
 void ROSPublisher::onNewStdBinData(
@@ -69,7 +70,7 @@ void ROSPublisher::onNewStdBinData(
     const ixblue_stdbin_decoder::Data::NavHeader& headerData)
 {
     // Update status for diagnostics
-    //diagPub.updateStatus(navData.insSystemStatus, navData.insAlgorithmStatus);
+    diagPub.updateStatus(navData.insSystemStatus, navData.insAlgorithmStatus);
 
     auto headerMsg = getHeader(headerData, navData);
 
@@ -103,7 +104,7 @@ void ROSPublisher::onNewStdBinData(
     {
         imuMsg->header = headerMsg;
         stdImuPublisher->publish(*imuMsg);
-        //diagPub.stdImuTick(imuMsg->header.stamp);
+        diagPub.stdImuTick(imuMsg->header.stamp);
     }
     if(navsatfixMsg)
     {
@@ -166,6 +167,11 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
     }
 
     return res;
+}
+
+std::shared_ptr<rclcpp::Node> ROSPublisher::getNode() const
+{
+  return nh;
 }
 
 sensor_msgs::msg::Imu::Ptr

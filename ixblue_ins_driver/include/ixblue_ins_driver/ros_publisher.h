@@ -13,10 +13,10 @@
 
 #include "diagnostics_publisher.h"
 
-class ROSPublisher : public rclcpp::Node
+class ROSPublisher
 {
 public:
-    ROSPublisher();
+    ROSPublisher(std::shared_ptr<rclcpp::Node> node);
     void onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
                          const ixblue_stdbin_decoder::Data::NavHeader& headerData);
 
@@ -33,6 +33,8 @@ public:
     static ixblue_ins_msgs::msg::Ins::Ptr
     toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
 
+    std::shared_ptr<rclcpp::Node> getNode() const;
+
 protected:
     // Header
     std_msgs::msg::Header getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
@@ -44,14 +46,14 @@ protected:
     std::string time_origin;
     bool use_compensated_acceleration;
 
-    //ros::NodeHandle nh;
+    std::shared_ptr<rclcpp::Node> nh;
 
     // Publishers
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr stdImuPublisher;
     rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr stdNavSatFixPublisher;
     rclcpp::Publisher<sensor_msgs::msg::TimeReference>::SharedPtr stdTimeReferencePublisher;
     rclcpp::Publisher<ixblue_ins_msgs::msg::Ins>::SharedPtr stdInsPublisher;
-    //DiagnosticsPublisher diagPub;
+    DiagnosticsPublisher diagPub;
 
     // Utils
     bool useInsAsTimeReference = true;
