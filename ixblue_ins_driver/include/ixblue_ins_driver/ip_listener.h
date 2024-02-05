@@ -30,6 +30,8 @@ public:
     void onNewDataReceived(const boost::system::error_code& error,
                            std::size_t bytes_transfered);
 
+    void setPublisher(std::shared_ptr<ROSPublisher> pub);
+
 protected:
     /*!
      * This is the pro-actor pattern implemented by boost asio. Each daughter class
@@ -44,5 +46,5 @@ protected:
     boost::array<uint8_t, 8192> datas;
     boost::asio::io_service service;
     std::thread asioThread;
-    ROSPublisher rosPublisher;
+    std::shared_ptr<ROSPublisher> rosPublisher;
 };
