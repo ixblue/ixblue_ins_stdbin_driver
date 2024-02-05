@@ -1,4 +1,4 @@
-Header header # Standard ROS message header
+std_msgs/Header header # Standard ROS message header
 
 int8 ALT_REF_GEOID=0
 int8 ALT_REF_ELLIPSOID=1

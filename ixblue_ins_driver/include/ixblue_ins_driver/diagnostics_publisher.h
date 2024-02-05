@@ -1,13 +1,14 @@
 #pragma once
 
 #include <memory>
+#include <chrono>
+#include <bitset>
 
 #include <boost/optional.hpp>
 
-#include <diagnostic_updater/diagnostic_updater.h>
-#include <diagnostic_updater/publisher.h>
-#include <ros/node_handle.h>
-#include <ros/timer.h>
+#include <diagnostic_updater/diagnostic_updater.hpp>
+#include <diagnostic_updater/publisher.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 #include <ixblue_stdbin_decoder/data_models/navigation_data/ins_algorithm_status.h>
 #include <ixblue_stdbin_decoder/data_models/navigation_data/ins_system_status.h>
@@ -15,16 +16,16 @@
 class DiagnosticsPublisher
 {
 public:
-    DiagnosticsPublisher(ros::NodeHandle& nh);
+    DiagnosticsPublisher(std::shared_ptr<rclcpp::Node> nh);
     void setHardwareID(const std::string& hwId);
-    void stdImuTick(const ros::Time& stamp);
+    void stdImuTick(const rclcpp::Time& stamp);
     void updateStatus(
         const boost::optional<ixblue_stdbin_decoder::Data::INSSystemStatus>& systemStatus,
         const boost::optional<ixblue_stdbin_decoder::Data::INSAlgorithmStatus>&
             algorithmStatus);
 
 private:
-    void diagTimerCallback(const ros::TimerEvent&);
+    void diagTimerCallback();
     void produceStatusDiagnostics(diagnostic_updater::DiagnosticStatusWrapper& status);
 
     // Parameters
@@ -33,10 +34,11 @@ private:
     double max_latency;
     double connection_lost_timeout;
 
-    ros::Timer diagnosticsTimer;
+    rclcpp::TimerBase::SharedPtr diagnosticsTimer;
     diagnostic_updater::Updater diagnosticsUpdater;
     std::unique_ptr<diagnostic_updater::TopicDiagnostic> stdImuTopicDiagnostic;
-    ros::SteadyTime lastMessageReceivedStamp;
+    rclcpp::Time lastMessageReceivedStamp;
     boost::optional<ixblue_stdbin_decoder::Data::INSSystemStatus> lastSystemStatus;
     boost::optional<ixblue_stdbin_decoder::Data::INSAlgorithmStatus> lastAlgorithmStatus;
+    std::shared_ptr<rclcpp::Node> nh_;
 };
